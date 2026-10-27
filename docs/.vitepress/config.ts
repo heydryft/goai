@@ -172,6 +172,7 @@ export default defineConfig({
                 { text: 'FPT Smart Cloud', link: '/providers/fptcloud' },
                 { text: 'Heabsy', link: '/providers/heabsy' },
                 { text: 'Opper', link: '/providers/opper' },
+                { text: 'Runcrate', link: '/providers/runcrate' },
               ],
             },
             {
