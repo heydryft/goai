@@ -89,6 +89,7 @@ func TestChat_HTTPError(t *testing.T) {
 }
 
 func TestNoTokenSource(t *testing.T) {
+	t.Setenv("RUNCRATE_API_KEY", "")
 	model := Chat("model")
 	_, err := model.DoGenerate(t.Context(), provider.GenerateParams{
 		Messages: []provider.Message{
@@ -356,11 +357,11 @@ func TestChat_PromptCachingIgnored(t *testing.T) {
 	// DoGenerate with JSON server
 	genServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		_, _ = fmt.Fprint(w, `{"id":"chatcmpl-test","model":"meta-llama/Meta-Llama-3-70B-Instruct","choices":[{"index":0,"message":{"role":"assistant","content":"ok"},"finish_reason":"stop"}],"usage":{"prompt_tokens":5,"completion_tokens":2,"total_tokens":7}}`)
+		_, _ = fmt.Fprint(w, `{"id":"chatcmpl-test","model":"zai-org/GLM-5.3","choices":[{"index":0,"message":{"role":"assistant","content":"ok"},"finish_reason":"stop"}],"usage":{"prompt_tokens":5,"completion_tokens":2,"total_tokens":7}}`)
 	}))
 	defer genServer.Close()
 
-	genModel := Chat("meta-llama/Meta-Llama-3-70B-Instruct", WithAPIKey("test-key"), WithBaseURL(genServer.URL))
+	genModel := Chat("zai-org/GLM-5.3", WithAPIKey("test-key"), WithBaseURL(genServer.URL))
 	genResult, err := genModel.DoGenerate(t.Context(), provider.GenerateParams{
 		Messages:      []provider.Message{{Role: provider.RoleUser, Content: []provider.Part{{Type: provider.PartText, Text: "hi"}}}},
 		PromptCaching: true,
@@ -381,7 +382,7 @@ func TestChat_PromptCachingIgnored(t *testing.T) {
 	}))
 	defer streamServer.Close()
 
-	streamModel := Chat("meta-llama/Meta-Llama-3-70B-Instruct", WithAPIKey("test-key"), WithBaseURL(streamServer.URL))
+	streamModel := Chat("zai-org/GLM-5.3", WithAPIKey("test-key"), WithBaseURL(streamServer.URL))
 	streamResult, err := streamModel.DoStream(t.Context(), provider.GenerateParams{
 		Messages:      []provider.Message{{Role: provider.RoleUser, Content: []provider.Part{{Type: provider.PartText, Text: "hi"}}}},
 		PromptCaching: true,
